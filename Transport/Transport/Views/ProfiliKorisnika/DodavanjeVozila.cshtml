@@ -1,0 +1,52 @@
+﻿@model Transport.Models.Vozilo
+<!-- Modal -->
+<div class="modal fade" id="vehicle-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="exampleModalLabel">Dodaj vozilo</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form asp-controller="Vozila" asp-action="Create" method="POST">
+                <div class="modal-body">
+                    <input type="hidden" asp-for="IdPrijevoznik" value="@ViewData["IdKorisnik"]" />
+                    <div class="form-group">
+                        <label asp-for="Tip" class="control-label"></label>
+                        <input asp-for="Tip" class="form-control" />
+                        <span asp-validation-for="Tip" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Marka" class="control-label"></label>
+                        <input asp-for="Marka" class="form-control" />
+                        <span asp-validation-for="Marka" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Boja" class="control-label"></label>
+                        <input asp-for="Boja" class="form-control" />
+                        <span asp-validation-for="Boja" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Registarska oznaka</label>
+                        <input asp-for="RegistarskaOznaka" class="form-control" />
+                        <span asp-validation-for="RegistarskaOznaka" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="eco">Ekološki prihvatljivo vozilo</label>
+                        <input name="Ekolosko" class="form-control eco" type="checkbox">
+                        <span asp-validation-for="Ekolosko" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Zatvori</button>
+                    <button type="submit" class="btn btn-primary">Spremi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

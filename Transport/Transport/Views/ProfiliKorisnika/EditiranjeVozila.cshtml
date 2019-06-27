@@ -1,0 +1,47 @@
+﻿@model Transport.Models.Vozilo
+
+<h2>EditiranjeVozila</h2>
+
+<h4>Vozilo</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="EditiranjeVozila">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="Tip" class="control-label"></label>
+                <input asp-for="Tip" class="form-control" />
+                <span asp-validation-for="Tip" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Marka" class="control-label"></label>
+                <input asp-for="Marka" class="form-control" />
+                <span asp-validation-for="Marka" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Boja" class="control-label"></label>
+                <input asp-for="Boja" class="form-control" />
+                <span asp-validation-for="Boja" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RegistarskaOznaka" class="control-label"></label>
+                <input asp-for="RegistarskaOznaka" class="form-control" />
+                <span asp-validation-for="RegistarskaOznaka" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Ekolosko" class="control-label"></label>
+                <input asp-for="Ekolosko" class="form-control" />
+                <span asp-validation-for="Ekolosko" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

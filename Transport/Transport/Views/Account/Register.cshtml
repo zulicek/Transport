@@ -1,0 +1,77 @@
+﻿@model ExtendedRegisterViewModel
+
+<div class="jumbotron">
+    <div class="overlay"></div>
+    <div class="user-handle register">
+        <form asp-controller="Account" asp-action="Register" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <label class="control-label">Ime</label>
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-user fa"></i></span>
+                <input asp-for="Ime" class="form-control" />
+                <span asp-validation-for="Ime" class="text-danger"></span>
+            </div>
+
+            <label class="control-label">Prezime</label>
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-user fa"></i></span>
+                <input asp-for="Prezime" class="form-control" />
+                <span asp-validation-for="Prezime" class="text-danger"></span>
+            </div>
+
+            <label class="control-label">Lozinka</label>
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-lock fa-lg" aria-hidden="true"></i></span>
+                <input asp-for="Password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <label class="control-label">Potvrdi lozinku</label>
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-lock fa-lg" aria-hidden="true"></i></span>
+                <input asp-for="ConfirmPassword" class="form-control" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+
+            <label class="control-label">TelefonskiBroj</label>
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-phone"></i></span>
+                <input asp-for="TelBroj" class="form-control" />
+                <span asp-validation-for="TelBroj" class="text-danger"></span>
+            </div>
+
+            <label class="control-label">OIB</label>
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-users fa"></i></span>
+                <input asp-for="Oib" class="form-control" />
+                <span asp-validation-for="Oib" class="text-danger"></span>
+            </div>
+
+            <label class="control-label">Email</label>
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-envelope fa"></i></span>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="input-group">
+                <label class="control-label">Želim primati obavijesti putem e-maila</label>
+                <input name="PrimaEmail" class="form-control eco" type="checkbox" onchange="includePayment(this)">
+            </div>
+
+            <label class="control-label">Uloga</label>
+            <div class="input-group">
+                <input id="narucitelj-registracija" type="radio" asp-for="Uloga" value="N"> Naručitelj
+                <input id="prijevoznik-registracija" type="radio" asp-for="Uloga" value="P"> Prijevoznik
+                @*<input type="radio" asp-for="Uloga" value="A"> Admin*@
+            </div>
+
+            <button type="submit" class="btn btn-primary">Registriraj se</button>
+            <div class="register-link">Imaš račun? <a asp-area="" asp-controller="Account" asp-action="Login">Prijavi se</a>.</div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

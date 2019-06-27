@@ -1,0 +1,63 @@
+﻿@model PonudaPrijevoza
+<!-- Modal -->
+
+<div class="modal fade" id="edit-offer-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="exampleModalLabel">Uređivanje zahtjeva</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form asp-action="Edit">
+                <div class="modal-body">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="Id" />
+                    <div class="form-group">
+                        <label class="control-label">Cijena</label>
+                        <input asp-for="Cijena" class="form-control" />
+                        <span asp-validation-for="Cijena" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Rok isteka ponude</label>
+                        <input asp-for="RokIstekaPonude" class="form-control" />
+                        <span asp-validation-for="RokIstekaPonude" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Rok otkaza ponude</label>
+                        <input asp-for="RokOtkazaPonude" class="form-control" />
+                        <span asp-validation-for="RokOtkazaPonude" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Cijena otkaza</label>
+                        <input asp-for="CijenaOtkaza" class="form-control" />
+                        <span asp-validation-for="CijenaOtkaza" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="hidden" asp-for="IdZahtjev" value="@Model.IdZahtjev" />
+                        <span asp-validation-for="IdZahtjev" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="hidden" asp-for="IdPrijevoznik" value="@Model.IdPrijevoznik" />
+                        <span asp-validation-for="IdPrijevoznik" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="hidden" asp-for="IdStatusPonude" value="@Model.IdStatusPonude" />
+                        <span asp-validation-for="IdStatusPonude" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Zatvori</button>
+                        <button type="submit" class="btn btn-primary">Spremi</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

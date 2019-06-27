@@ -1,0 +1,92 @@
+﻿@model IEnumerable<Transport.Models.Zahtjev>
+
+<h2>Index</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Vrijeme početka
+            </th>
+            <th>
+               Vrijeme završetka
+
+            </th>
+            <th>
+               Cijena neizvršenja
+            </th>
+            <th>
+               Širina
+            </th>
+            <th>
+                Visina
+            </th>
+            <th>
+               Duljina
+            </th>
+            <th>
+               Masa
+            </th>
+            <th>
+                Opis
+            </th>
+            <th>
+                Naručitelj ID
+            </th>
+            <th>
+                Naručitelj
+            </th>
+            <th>
+                Status zahtjeva
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.VrijemePocetka)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.VrijemeZavrsetka)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CijenaNeizvrsenja)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Sirina)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Visina)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Duiljina)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Masa)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Opis)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdNaruciteljNavigation.IdKorisnik)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdStatusZahtjevaNavigation.Status)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <form asp-action="Delete" asp-route-id="@item.Id" method="post">
+                    <input type="hidden" name="Id" value="@item.Id" />
+                    <button type="submit" class="delete btn-link" title="Delete">Obriši</button>
+                </form>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>

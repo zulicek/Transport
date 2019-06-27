@@ -1,0 +1,152 @@
+﻿@model Transport.ViewModels.ProfilVozilaViewModel
+
+<div class="subpage-banner user-profile-banner">
+    <div class="overlay"></div>
+</div>
+
+<div>
+    <div id="tempmessage" class="alert"></div>
+    @if (TempData[Constants.Message] != null)
+    {
+        bool error = false;
+        var obj = TempData[Constants.ErrorOccurred];
+        if (obj != null)
+        {
+            error = (bool)obj;
+        }
+        <div class="alert @(error ? "alert-danger" : "alert-success")">@TempData[Constants.Message]</div>
+    }
+</div>
+
+<div class="request">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <div class="user-profile">
+                    <div class="request-header">
+                        <label>Ime i prezime korisnika</label>
+                        @{ string ime = Model.KorisnikovProfil.Ime + " " + Model.KorisnikovProfil.Prezime; }
+                        <h3>@ime</h3>
+                        <button type="button" class="btn btn-toolbar" data-toggle="modal" data-target="#edit-profile-modal"><i class="fas fa-edit"></i></button>
+                    </div>
+                    <div class="request-body">
+                        <div class="request-part">
+                            <h4>Osobni podaci</h4>
+                            <label>OIB</label>
+                            <span>@Model.KorisnikovProfil.Oib</span>
+                        </div>
+                        <div class="request-part">
+                            <h4>Kontakt</h4>
+                            <label>Telefonski broj</label>
+                            <span>@Model.KorisnikovProfil.TelBroj</span>
+                            <label>E-mail</label>
+                            <span>@Model.KorisnikovProfil.Email</span>
+                            <label>Želim primati obavijesti e-mailom</label>
+                            @if (Model.KorisnikovProfil.PrimaEmail) { 
+                                <span>Da</span>
+                            } else
+                            {
+                                <span>Ne</span>
+
+                            }
+
+                        </div>
+                        @if (User.IsInRole("prijevoznik"))
+                        {
+                            if (@Model.KorisnikovProfil.NazivTvrtke != null)
+                            {
+                                <div class="request-part">
+                                    <h4>Tvrtka</h4>
+                                    <label>Naziv</label>
+                                    <span>@Model.KorisnikovProfil.NazivTvrtke</span>
+                                </div>
+                            }
+                        }
+                        @if (User.IsInRole("narucitelj"))
+                        {
+                            if (Model.KorisnikovProfil.ZahtijevaEko == "True")
+                            {
+                                <div class="request-part">
+                                    <label class="eco">Zahtijevam ekološko vozilo</label>
+                                    <i class="fa fa-leaf"></i>
+                                </div>
+                            }
+                        }
+
+                        @if (User.IsInRole("prijevoznik"))
+                        {
+                            <div class="request-part vehicles">
+                                <h4>Vozila</h4>
+                                <button type="button" class="btn btn-primary add-vehicle" data-toggle="modal" data-target="#vehicle-modal">
+                                    Dodaj vozilo<i class="fa fa-plus"></i>
+                                </button>
+                                @foreach (var vozilo in Model.Vozila)
+                                {
+                                    <div class="vehicle">
+                                        <div class="toolbar-vehicle">
+                                            <a asp-action="EditiranjeVozila" asp-route-id="@vozilo.Id" class="btn btn-toolbar"><i class="fas fa-edit"></i></a>
+                                            <form asp-controller="Vozila" asp-action="Delete" asp-route-id="@vozilo.Id" method="post">
+                                                <input type="hidden" value="@vozilo.Id" />
+                                                <button type="submit" class="delete btn btn-toolbar" title="Delete"><i class="fas fa-trash-alt"></i></button>
+                                            </form>
+                                        </div>
+                                        <label>Registarska oznaka</label>
+                                        <span>@vozilo.RegistarskaOznaka</span>
+                                        <label>Tip</label>
+                                        <span>@vozilo.Tip</span>
+                                        <label>Marka</label>
+                                        <span>@vozilo.Marka</span>
+                                        <label>Boja</label>
+                                        <span>@vozilo.Boja</span>
+                                        @{
+                                            if (vozilo.Ekolosko == true)
+                                            {
+                                                <label class="eco">Ekološki</label>
+                                                <i class="fa fa-leaf"></i>
+                                            }
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        }
+                        <div class="request-part">
+                            <h4>Ocjena</h4>
+                            @if (User.IsInRole("narucitelj"))
+                            {
+                                <label>Naručitelj</label>
+                                @if (Model.KorisnikovProfil.OcjenaNarucitelj != 0)
+                                {
+                                    <h4 class="review">@Model.KorisnikovProfil.OcjenaNarucitelj</h4>
+                                }
+                                else
+                                {
+                                    <span>Korisnik još nije ocijenjen</span>
+                                }
+                            }
+                            @if (User.IsInRole("prijevoznik"))
+                            {
+                                <label>Prijevoznik</label>
+                                @if (Model.KorisnikovProfil.OcjenaPrijevoznik != 0)
+                                {
+                                    <h4 class="review">@Model.KorisnikovProfil.OcjenaPrijevoznik</h4>
+                                }
+                                else
+                                {
+                                    <span>Korisnik još nije ocijenjen</span>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    @await Html.PartialAsync("DodavanjeVozila", new Vozilo(),
+                        new ViewDataDictionary(this.ViewData) { { "IdKorisnik", Model.KorisnikovProfil.Id } })
+
+
+    @await Html.PartialAsync("UredivanjeProfila", Model.KorisnikovProfil,
+                        new ViewDataDictionary(this.ViewData) { { "Id", Model.KorisnikovProfil.Id } })
+

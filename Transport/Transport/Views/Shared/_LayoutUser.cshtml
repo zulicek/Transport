@@ -1,0 +1,120 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ZavrsniRad</title>
+
+    <environment include="Development">
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/css/site.css" />
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+        <link href="https://fonts.googleapis.com/css?family=Lato:300,300i,400,400i,700,700i&amp;subset=latin-ext" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Lora:400,400i,700,700i&amp;subset=latin-ext" rel="stylesheet">
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
+              asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/css/site.css" />
+    </environment>
+
+    @RenderSection("styles", required: false)
+</head>
+<body>
+    <nav class="navbar navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand"><i class="fa fa-truck-moving"></i>Transport</a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    @if (User.IsInRole("narucitelj"))
+                    {
+                        <li><a asp-area="" asp-controller="ProsireniZahtjevi" asp-action="MojiZahtjevi">Moji zahtjevi</a></li>
+                        <li><a asp-area="" asp-controller="ProsireniPrijevozi" asp-action="Index">Moji prijevozi</a></li>
+                    }
+                    else if (User.IsInRole("prijevoznik"))
+                    {
+                        <li><a asp-area="" asp-controller="ProsireniZahtjevi" asp-action="Index">Zahtjevi</a></li>
+                        <li><a asp-area="" asp-controller="PonudePrijevoza" asp-action="Index">Moje ponude</a></li>
+                        <li><a asp-area="" asp-controller="ProsireniPrijevozi" asp-action="Index">Moji prijevozi</a></li>
+                    }
+                    else if (User.IsInRole("administrator"))
+                    {
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Relacije<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a asp-area="" asp-controller="PonudePrijevoza" asp-action="Index">Ponude</a></li>
+                                <li><a asp-area="" asp-controller="ProsireniPrijevozi" asp-action="SviPrijevozi">Prijevozi</a></li>
+                                <li><a asp-area="" asp-controller="ProfiliKorisnika" asp-action="Index">Profili</a></li>
+                                <li><a asp-area="" asp-controller="Korisnici">Korisnici</a></li>
+                                <li><a asp-area="" asp-controller="Lokacije">Lokacije</a></li>
+                                <li><a asp-area="" asp-controller="Mjesta">Mjesta</a></li>
+                                <li><a asp-area="" asp-controller="Naplate">Naplate</a></li>
+                                <li><a asp-area="" asp-controller="Narucitelji">Naručitelji</a></li>
+                                <li><a asp-area="" asp-controller="Prijevozi">Prijevozi</a></li>
+                                <li><a asp-area="" asp-controller="Prijevoznici">Prijevoznici</a></li>
+                                <li><a asp-area="" asp-controller="RazloziNaplate">Razlozi naplate</a></li>
+                                <li><a asp-area="" asp-controller="StatusiPonude">Statusi ponude</a></li>
+                                <li><a asp-area="" asp-controller="StatusiZahtjeva">Statusi zahtjeva</a></li>
+                                <li><a asp-area="" asp-controller="Vozila">Vozila</a></li>
+                                <li><a asp-area="" asp-controller="VrsteLokacije">Vrste lokacije</a></li>
+                                <li><a asp-area="" asp-controller="VrsteNaplate">Vrste naplate</a></li>
+                                <li><a asp-area="" asp-controller="Zahtjevi">Zahtjevi</a></li>
+                                <li><a asp-area="" asp-controller="ZahtjevLokacija">ZahtjevLokacija</a></li>
+                            </ul>
+                        </li>
+                    }
+
+                </ul>
+                @await Html.PartialAsync("_LoginPartial")
+            </div>
+        </div>
+    </nav>
+    @RenderBody()
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12 text-center">
+                    <p>&copy; 2018 - Aplikacija za povezivanje korisnika s pružateljima usluge prijevoza manjih tereta | Email: <a href="mailto:lora.zulicek@fer.hr">lora.zulicek@fer.hr</a></p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+    <environment include="Development">
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script asp-src-include="~/lib/jquery-validation/**/jquery.validate.min.js"></script>
+        <script asp-src-include="~/lib/jquery-validation-unobtrusive/**/*.min.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"
+                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                asp-fallback-test="window.jQuery"
+                crossorigin="anonymous"
+                integrity="sha384-K+ctZQ+LL8q6tP7I94W+qzQsfRV2a+AfHIi9k8z8l9ggpc8X+Ytst4yBo/hH+8Fk">
+        </script>
+        <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
+                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
+                crossorigin="anonymous"
+                integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
+        </script>
+        <script src="~/js/site.min.js" asp-append-version="true"></script>
+    </environment>
+
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>

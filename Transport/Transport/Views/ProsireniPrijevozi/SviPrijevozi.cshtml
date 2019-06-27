@@ -1,0 +1,132 @@
+﻿@model IEnumerable<Transport.ViewModels.ProsireniPrijevozViewModel>
+
+<div class="subpage-banner transports-banner">
+    <div class="overlay"></div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <table class="table" id="tableprijevozi">
+            <thead>
+                <tr>
+                    <th>
+                        Status zahtjeva
+                    </th>
+                    <th>
+                        Status ponude
+                    </th>
+                    <th>
+                        Vrijeme početka
+                    </th>
+                    <th>
+                        Vrijeme završetka
+                    </th>
+                    <th>
+                        Početna lokacija
+                    </th>
+                    <th>
+                        Odredišna lokacija
+                    </th>
+                    <th>
+                        Cijena (kn)
+                    </th>
+                    <th>
+                        Naručitelj
+                    </th>
+                    <th>
+                        Ocjena naručitelja
+                    </th>
+                    <th>
+                        Prijevoznik
+                    </th>
+                    <th>
+                        Ocjena prijevoznika
+                    </th>
+                </tr>
+</thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                <tr>
+                    <td>
+                        <h5 class="@(item.ProsireniZahtjev.IdStatusZahtjevaNavigation.Status == "Izvršeno" ? "izvrseno" : "neizvrseno")">
+                            @Html.DisplayFor(modelItem => item.ProsireniZahtjev.IdStatusZahtjevaNavigation.Status)
+                        </h5>
+                    </td>
+                    <td>
+                        <h5 class="@(item.Prijevoz.IdPonudaPrijevozaNavigation.IdStatusPonudeNavigation.Status == "Izvršeno" ? "izvrseno" : "neizvrseno")">
+                            @Html.DisplayFor(modelItem => item.Prijevoz.IdPonudaPrijevozaNavigation.IdStatusPonudeNavigation.Status)
+                        </h5>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ProsireniZahtjev.VrijemePocetka)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ProsireniZahtjev.VrijemeZavrsetka)
+                    </td>
+                    <td>
+                        @item.ProsireniZahtjev.PocetnoMjesto
+                    </td>
+                    <td>
+                        @item.ProsireniZahtjev.OdredisnoMjesto
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Prijevoz.IdPonudaPrijevozaNavigation.Cijena)
+                    </td>
+                    <td>
+                        @{ string ime = item.ProsireniZahtjev.IdNaruciteljNavigation.IdKorisnikNavigation.Ime
+                                              + " " + item.ProsireniZahtjev.IdNaruciteljNavigation.IdKorisnikNavigation.Prezime; }
+                        <h5>
+                            @ime
+                        </h5>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Prijevoz.OcjenaNarucitelja)
+                    </td>
+                    <td>
+                        @{ string ime2 = item.Prijevoz.IdPonudaPrijevozaNavigation.IdPrijevoznikNavigation.IdKorisnikNavigation.Ime
+                                              + " " + item.Prijevoz.IdPonudaPrijevozaNavigation.IdPrijevoznikNavigation.IdKorisnikNavigation.Prezime; }
+                        <h5>
+                            @ime2
+                        </h5>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Prijevoz.OcjenaPrijevoznika)
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section styles{
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css" />
+}
+@section scripts{
+    <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#tableprijevozi').DataTable({
+                language: {
+                    search: "Pretraga",
+                    zeroRecords: "Nema podataka za prikaz",
+                    info: "_START_ - _END_ (ukupno _TOTAL_)",
+                    lengthMenu: "Prikaži _MENU_ zapisa",
+                    paginate: {
+                        first: "<<",
+                        previous: "<",
+                        next: ">",
+                        last: ">>"
+                    },
+                    emptyTable: "Nema podataka za prikaz",
+                    info: "_START_ - _END_ od ukupno _TOTAL_ zapisa",
+                    infoEmpty: "Nema podataka za prikaz",
+                    infoFiltered: "(filtrirano od ukupno _MAX_ zapisa)",
+                }
+            });
+        });
+    </script>
+}
+

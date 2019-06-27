@@ -1,0 +1,80 @@
+﻿@using System.Collections.Generic
+@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Http.Authentication
+@model LoginViewModel
+@inject SignInManager<ApplicationUser> SignInManager
+
+<div class="jumbotron">
+    <div class="overlay"></div>
+    <div class="user-handle">
+        <form asp-controller="Account" asp-action="Login" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <label class="col-sm-2 control-label">Email</label>
+            <div class="input-group col-sm-10">
+                <span class="input-group-addon"><i class="fa fa-envelope fa"></i></span>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <label class="col-sm-2 control-label">Lozinka</label>
+            <div class="input-group col-sm-10">
+                <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                <input asp-for="Password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            @*<div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <div class="checkbox">
+                        <label asp-for="RememberMe">
+                            <input asp-for="RememberMe" />
+                            @Html.DisplayNameFor(m => m.RememberMe)
+                        </label>
+                    </div>
+                </div>
+            </div>
+            *@
+            <button type="submit" class="btn btn-primary">Prijavi se</button>
+            <div class="register-link">Nemaš račun? <a asp-area="" asp-action="Register" asp-route-returnurl="@ViewData["ReturnUrl"]">Registriraj se</a>.</div>
+
+            @*<a asp-action="ForgotPassword">Forgot your password?</a>*@
+
+        </form>
+        @*<section>
+            <h4>Use another service to log in.</h4>
+            <hr />
+            @{
+                var loginProviders = (await SignInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+                if (loginProviders.Count == 0)
+                {
+                    <div>
+                        <p>
+                            There are no external authentication services configured. See <a href="http://go.microsoft.com/fwlink/?LinkID=532715">this article</a>
+                            for details on setting up this ASP.NET application to support logging in via external services.
+                        </p>
+                    </div>
+                }
+                else
+                {
+                    <form asp-controller="Account" asp-action="ExternalLogin" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal">
+                        <div>
+                            <p>
+                                @foreach (var provider in loginProviders)
+                                {
+                                    <button type="submit" class="btn btn-default" name="provider" value="@provider.DisplayName" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
+                                }
+                            </p>
+                        </div>
+                    </form>
+                }
+            }
+        </section>
+            *@
+    </div>
+</div>
+
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

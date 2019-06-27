@@ -1,0 +1,149 @@
+﻿@model ZahtjeviLokacijeViewModel
+
+@{
+    var zahtjeviLokacije = Model.ZahtjeviLokacije;
+}
+
+
+<div class="subpage-banner user-requests-banner">
+    <div class="overlay"></div>
+</div>
+
+<div class="modal-button">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#request-modal">
+                    Kreiraj zahtjev<i class="fa fa-plus"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@await Html.PartialAsync("KreiranjeZahtjeva", new ProsireniZahtjevViewModel())
+
+<div>
+    <div id="tempmessage" class="alert"></div>
+    @if (TempData[Constants.Message] != null)
+    {
+        bool error = false;
+        var obj = TempData[Constants.ErrorOccurred];
+        if (obj != null)
+        {
+            error = (bool)obj;
+        }
+        <div class="alert @(error ? "alert-danger" : "alert-success")">@TempData[Constants.Message]</div>
+    }
+</div>
+
+
+<div class="container">
+    <div class="row">
+        <table class="table" id="tablemojizahtjevi">
+            <thead>
+                <tr>
+                    <th>Zahtijevam eko</th>
+                    <th>Početak</th>
+                    <th>Završetak</th>
+                    <th>Početna lokacija</th>
+                    <th>Odredišna lokacija</th>
+                    <th>Opis</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Zahtjevi)
+                {
+                    <tr class="@(item.IdStatusZahtjevaNavigation.Status != "Otvoreno" &&
+                            item.IdStatusZahtjevaNavigation.Status != "PristiglePonude" ? "reserved" : "")
+                          @(item.IdStatusZahtjevaNavigation.Status == "Izvršeno" ||
+                            item.IdStatusZahtjevaNavigation.Status == "Neizvršeno" ? "done" : "")">
+                        <td class="eco">
+                            @{ if (item.IdNaruciteljNavigation.ZahtijevaEko != null)
+                                {
+                                    <i class="fa fa-leaf"></i>
+                                }
+                            }
+                        </td>
+                        <td>
+                            @item.VrijemePocetka
+                        </td>
+                        <td>
+                            @item.VrijemeZavrsetka
+                        </td>
+                        @{
+                            var zahtjevId = item.Id;
+
+                            /* sve lokacije zahtjeva - dvije lokacije, početna i završna*/
+                            var lokacijeZahtjeva = zahtjeviLokacije.Where(i => i.IdZahtjev == zahtjevId);
+
+                            Lokacija pocetnaLokacija = null;
+                            Lokacija odredisnaLokacija = null;
+
+                            foreach (var lokacija in lokacijeZahtjeva)
+                            {
+                                if (lokacija.IdLokacijaNavigation.IdVrstaLokacijeNavigation.Vrsta == "početna")
+                                {
+                                    pocetnaLokacija = lokacija.IdLokacijaNavigation;
+                                }
+                                else
+                                {
+                                    odredisnaLokacija = lokacija.IdLokacijaNavigation;
+                                }
+                            }
+                        }
+                        <td>
+                            @{var pocetnoMjestoString = pocetnaLokacija.IdMjestoNavigation.PostanskiBroj + ", " + pocetnaLokacija.IdMjestoNavigation.Naziv;}
+                            @pocetnoMjestoString
+                        </td>
+                        <td>
+                            @{var odredisnoMjestoString = odredisnaLokacija.IdMjestoNavigation.PostanskiBroj + ", " + odredisnaLokacija.IdMjestoNavigation.Naziv;}
+                            @odredisnoMjestoString
+                        </td>
+                        <td>
+                            @item.Opis
+                        </td>
+                        <td>
+                            <h5>@item.IdStatusZahtjevaNavigation.Status</h5>
+                        </td>
+                        <td>
+                            <a asp-action="MojZahtjev" asp-route-id="@item.Id" class="btn btn-primary transport">Detalji<i class="fa fa-angle-right"></i></a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section styles{
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css" />
+}
+@section scripts{
+    <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#tablemojizahtjevi').DataTable({
+                language: {
+                    search: "Pretraga",
+                    zeroRecords: "Nema podataka za prikaz",
+                    info: "_START_ - _END_ (ukupno _TOTAL_)",
+                    lengthMenu: "Prikaži _MENU_ zapisa",
+                    paginate: {
+                        first: "<<",
+                        previous: "<",
+                        next: ">",
+                        last: ">>"
+                    },
+                    emptyTable: "Nema podataka za prikaz",
+                    info: "_START_ - _END_ od ukupno _TOTAL_ zapisa",
+                    infoEmpty: "Nema podataka za prikaz",
+                    infoFiltered: "(filtrirano od ukupno _MAX_ zapisa)",
+                }
+            });
+        });
+    </script>
+}

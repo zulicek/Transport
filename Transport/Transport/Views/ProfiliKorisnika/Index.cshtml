@@ -1,0 +1,158 @@
+﻿@model KorisniciVozilaViewModel
+
+@{
+    var vozila = Model.Vozila;
+    var narucitelji = Model.Narucitelji;
+    var prijevoznici = Model.Prijevoznici;
+}
+
+<h2>Index</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table"  id="tableprofili">
+    <thead>
+        <tr>
+            <th>
+                Oib
+            </th>
+            <th>
+                Ime
+            </th>
+            <th>
+                Prezime
+            </th>
+            <th>
+                Lozinka
+            </th>
+            <th>
+                TelBroj
+            </th>
+            <th>
+                Email
+            </th>
+            <th>
+                ZahtijevaEko
+            </th>
+            <th>
+                Vozila
+            </th>
+            <th>
+                NazivTvrtke
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Korisnici)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Oib)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Ime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Prezime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Lozinka)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TelBroj)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @{
+                        var zahtijevaEko = "Ne";
+
+                        if (narucitelji.Any(n => n.IdKorisnik == item.Id))
+                        {
+                            var narucitelj = narucitelji.Where(n => n.IdKorisnik == item.Id).FirstOrDefault();
+                            if (narucitelj.ZahtijevaEko == "True")
+                            {
+                                zahtijevaEko = "Da";
+
+                            }
+
+                        }
+                    }
+                    @zahtijevaEko
+                </td>
+                @{
+                    if (vozila.Any(v => v.IdPrijevoznik == item.Id))
+                    {
+                        var vozilaKorisnika = Model.Vozila.Where(v => v.IdPrijevoznik == item.Id);
+                        <td>
+                            @{
+                                foreach (var vozilo in vozilaKorisnika)
+                                {
+                                    var voziloString = vozilo.RegistarskaOznaka + ", " + vozilo.Tip + ": "
+                                                    + vozilo.Boja + ", " + vozilo.Marka + ", ekološko: " + vozilo.Ekolosko;
+                                    @voziloString <br />
+                                }
+                            }
+                        </td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+                }
+                <td>
+                    @{
+                        var nazivTvrtke = "";
+
+                        if (prijevoznici.Any(n => n.IdKorisnik == item.Id))
+                        {
+                            var prijevoznik = prijevoznici.Where(n => n.IdKorisnik == item.Id).FirstOrDefault();
+                            nazivTvrtke = prijevoznik.NazivTvrtke;
+                        }
+                    }
+                    @nazivTvrtke
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <form asp-action="Delete" asp-route-id="@item.Id" method="post">
+                        <input type="hidden" name="Id" value="@item.Id" />
+                        <button type="submit" class="delete btn-link" title="Delete">Obriši</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section styles{
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css" />
+}
+@section scripts{
+    <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#tableprofili').DataTable({
+                language: {
+                    search: "Pretraga",
+                    info: "_START_ - _END_ (ukupno _TOTAL_)",
+                    lengthMenu: "Prikaži _MENU_ zapisa",
+                    paginate: {
+                        first: "Prva",
+                        previous: "Prethodna",
+                        next: "Sljedeća",
+                        last: "Zadnja"
+                    },
+                    emptyTable: "Nema podataka za prikaz",
+                    info: "_START_ - _END_ od ukupno _TOTAL_ zapisa",
+                    infoEmpty: "Nema podataka za prikaz",
+                    infoFiltered: "(filtrirano od ukupno _MAX_ zapisa)",
+                }
+            });
+        });
+    </script>
+}

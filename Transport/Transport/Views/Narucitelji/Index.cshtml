@@ -1,0 +1,43 @@
+﻿@model IEnumerable<Transport.Models.Narucitelj>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.ZahtijevaEko)
+                </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdKorisnikNavigation)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ZahtijevaEko)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdKorisnikNavigation.Prezime)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.IdKorisnik">Edit</a> |
+                <form asp-action="Delete" asp-route-id="@item.IdKorisnik" method="post">
+                    <input type="hidden" name="IdMisija" value="@item.IdKorisnik" />
+                    <button type="submit" class="delete btn-link" title="Delete">Obriši</button>
+                </form>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

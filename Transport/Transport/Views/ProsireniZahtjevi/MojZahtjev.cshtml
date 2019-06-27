@@ -1,0 +1,396 @@
+﻿@model Transport.ViewModels.ZahtjevPonudeViewModel
+
+@using Transport.Models
+
+<div class="subpage-banner user-request-banner">
+    <div class="overlay"></div>
+</div>
+
+<div>
+    <div id="tempmessage" class="alert"></div>
+    @if (TempData[Constants.Message] != null)
+    {
+        bool error = false;
+        var obj = TempData[Constants.ErrorOccurred];
+        if (obj != null)
+        {
+            error = (bool)obj;
+        }
+        <div class="alert @(error ? "alert-danger" : "alert-success")">@TempData[Constants.Message]</div>
+    }
+</div>
+
+@{
+    string mixString = "";
+}
+
+<div class="request">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="request-header">
+                    @{string ime = Model.ProsireniZahtjev.IdNaruciteljNavigation.IdKorisnikNavigation.Ime + " " +
+                    Model.ProsireniZahtjev.IdNaruciteljNavigation.IdKorisnikNavigation.Prezime; }
+                    <a asp-controller="ProfiliKorisnika"
+                       asp-action="Details"
+                       asp-route-id="@Model.ProsireniZahtjev.IdNaruciteljNavigation.IdKorisnik">
+                        <h3>@ime</h3>
+                    </a>
+                    @{ if (Model.ProsireniZahtjev.IdNaruciteljNavigation.ZahtijevaEko != null)
+                        {
+                            <i class="fa fa-leaf"></i>
+                        }
+                    }
+                    @{ if (Model.ProsireniZahtjev.IdStatusZahtjevaNavigation.Status == "Otvoreno" ||
+               Model.ProsireniZahtjev.IdStatusZahtjevaNavigation.Status == "PristiglePonude")
+                        {
+                            <button type="button" class="btn btn-toolbar" data-toggle="modal" data-target="#edit-request-modal">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <form asp-action="Delete" asp-route-id="@Model.ProsireniZahtjev.Id" method="post" class="btn btn-toolbar">
+                                <input type="hidden" name="Id" value="@Model.ProsireniZahtjev.Id" />
+                                <button type="submit" class="delete"><i class="fas fa-trash-alt"></i></button>
+                            </form>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="request-body">
+                    <div class="request-part">
+                        <label>Početak</label>
+                        <span>@Model.ProsireniZahtjev.VrijemePocetka</span>
+                        <label>Završetak</label>
+                        <span>@Model.ProsireniZahtjev.VrijemeZavrsetka</span>
+                    </div>
+                    <div class="request-part">
+                        <label>Početna lokacija</label>
+                        <span>
+                            @{mixString = Model.ProsireniZahtjev.PocetnaLokacijaUlica + " " + Model.ProsireniZahtjev.PocetnaLokacijaKucniBroj;}
+                            @mixString
+                        </span>
+                        <span>
+                            @{mixString = Model.ProsireniZahtjev.PocetnoMjestoPbr + ", " + Model.ProsireniZahtjev.PocetnoMjesto;}
+                            @mixString
+                        </span>
+                        <label>Odredišna lokacija</label>
+                        <span>
+                            @{mixString = Model.ProsireniZahtjev.OdredisnaLokacijaUlica + " " + Model.ProsireniZahtjev.OdredisnaLokacijaKucniBroj;}
+                            @mixString
+                        </span>
+                        <span>
+                            @{mixString = Model.ProsireniZahtjev.OdredisnoMjestoPbr + ", " + Model.ProsireniZahtjev.OdredisnoMjesto;}
+                            @mixString
+                        </span>
+                    </div>
+                    <div class="request-part status">
+                        <label>Status</label>
+                        <h4>@Model.ProsireniZahtjev.IdStatusZahtjevaNavigation.Status</h4>
+                    </div>
+
+                    @{
+                        if (ViewData["IdPrijevoz"] != null)
+                        {
+                            <div class="request-part">
+                                <a asp-controller="ProsireniPrijevozi"
+                                   asp-action="Details"
+                                   asp-route-id="@ViewData["IdPrijevoz"]" class="link-to-offer">
+                                    Idi na prijevoz<i class="fa fa-angle-right"></i>
+                                </a>
+                            </div>
+                        }
+                    }
+
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="request-body">
+                    <h4>Podaci o teretu</h4>
+                    <div class="request-part">
+                        <label>Širina</label>
+                        <span>
+                            @{mixString = Model.ProsireniZahtjev.Sirina + "m";}
+                            @mixString
+                        </span>
+                        <label>Visina</label>
+                        <span>
+                            @{mixString = Model.ProsireniZahtjev.Visina + "m";}
+                            @mixString
+                        </span>
+                        <label>Duljina</label>
+                        <span>
+                            @{mixString = Model.ProsireniZahtjev.Duiljina + "m";}
+                            @mixString
+                        </span>
+                        <label>Masa</label>
+                        <span>
+                            @{mixString = Model.ProsireniZahtjev.Masa + "kg";}
+                            @mixString
+                        </span>
+                    </div>
+                    <div class="request-part">
+                        <label>Opis</label>
+                        <span>@Model.ProsireniZahtjev.Opis</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="title">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <h2>Ponude prijevoznika</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+@await Html.PartialAsync("UredivanjeZahtjeva", Model.ProsireniZahtjev,
+                    new ViewDataDictionary(this.ViewData) { { "IdNarucitelj", Model.ProsireniZahtjev.IdNarucitelj },
+                        { "IdStatusZahtjeva", Model.ProsireniZahtjev.IdStatusZahtjeva }})
+
+@*<div class="offers user-request-offers">
+        <div class="container">
+            <div class="row flex-row">
+                @{
+                    bool rezervacijaPoslana = false;
+
+                    if (Model.PonudePrijevoza.Any(p => p.IdStatusPonudeNavigation.Status == "PristiglaRezervacija" ||
+                        p.IdStatusPonudeNavigation.Status == "Rezervirano"))
+                    {
+                        rezervacijaPoslana = true;
+                    }
+
+                    foreach (var ponuda in Model.PonudePrijevoza)
+                    {
+                        <div class="col-md-4 col-sm-6 col-xs-12 flex-col">
+                            <div class="request-wrapper offers @(ponuda.IdStatusPonudeNavigation.Status == "Rezervirano" ? "reserved" : "")
+                              @(ponuda.IdStatusPonudeNavigation.Status == "Završeno" ? "done" : "")">
+                                <div class="request-header">
+                                    <label>Korisnik:</label>
+                                    @{ string ime2 = ponuda.IdPrijevoznikNavigation.IdKorisnikNavigation.Ime + " " +
+                                              ponuda.IdPrijevoznikNavigation.IdKorisnikNavigation.Prezime; }
+                                    <a asp-controller="ProfiliKorisnika"
+                                       asp-action="Details"
+                                       asp-route-id="@ponuda.IdPrijevoznikNavigation.IdKorisnik">
+                                        <h4>@ime2</h4>
+                                    </a>
+
+                                    @{ if (ponuda.IdPrijevoznikNavigation.NazivTvrtke != null)
+                                        {
+                                            <label>Tvrtka<</label>
+                                            <span>@ponuda.IdPrijevoznikNavigation.NazivTvrtke</span>
+                                        }
+                                    }
+                                </div>
+                                <div class="request-body">
+                                    <div class="request-part">
+                                        <label>Cijena prijevoza</label>
+                                        <span>@ponuda.Cijena</span>
+                                    </div>
+                                    <div class="request-part">
+                                        <label>Ponuda vrijedi do:</label>
+                                        <span>@ponuda.RokIstekaPonude</span>
+                                    </div>
+                                    <div class="request-part">
+                                        <label>Prijevoz se može otkazati do:</label>
+                                        <span>@ponuda.RokOtkazaPonude</span>
+                                        <label>Cijena otkaza ponude</label>
+                                        <span>@ponuda.CijenaOtkaza</span>
+                                    </div>
+                                    <div class="request-part">
+                                        @{
+                                            if (Model.Vozila.Any(v => v.IdPrijevoznik == ponuda.IdPrijevoznik))
+                                            {
+                                                <h5>Vozila</h5>
+                                                var vozila = Model.Vozila.Where(v => v.IdPrijevoznik == ponuda.IdPrijevoznik);
+
+                                                foreach (var vozilo in vozila)
+                                                {
+                                                    <div class="vehicle-line">
+                                                        <label>Registarska oznaka</label>
+                                                        <span>
+                                                            @vozilo.RegistarskaOznaka
+                                                            @{ if (vozilo.Ekolosko != null)
+                                                                {
+                                                                    <i class="fa fa-leaf"></i>
+                                                                }
+                                                            }
+                                                        </span>
+                                                    </div>
+                                                    <div class="vehicle-line">
+                                                        <label>Tip</label>
+                                                        <span>@vozilo.Tip</span>
+                                                    </div>
+                                                    <div class="vehicle-line">
+                                                        <label>Marka</label>
+                                                        <span>@vozilo.Marka</span>
+                                                    </div>
+                                                    <div class="vehicle-line">
+                                                        <label>Boja</label>
+                                                        <span>@vozilo.Boja</span>
+                                                    </div>
+                                                }
+                                            }
+                                        }
+                                    </div>
+                                    <div class="request-part status">
+                                        <label>Status</label>
+                                        <h5>@ponuda.IdStatusPonudeNavigation.Status</h5>
+                                    </div>
+                                </div>
+                                <div class="request-footer">
+                                    @{
+                                        if (Model.ProsireniZahtjev.IdStatusZahtjevaNavigation.Status != "Izvršeno" &&
+                                            Model.ProsireniZahtjev.IdStatusZahtjevaNavigation.Status != "Neizvršeno")
+                                        {
+                                            if (!rezervacijaPoslana && ponuda.IdStatusPonudeNavigation.Status == "Otvoreno")
+                                            {
+                                                <form asp-controller="PonudePrijevoza" asp-action="Rezervacija" method="post">
+                                                    <input type="hidden" name="IdPonuda" value="@ponuda.Id" />
+                                                    <button type="submit" class="btn btn-primary">Rezerviraj</button>
+                                                </form>
+
+                                            }
+                                            else if (ponuda.IdStatusPonudeNavigation.Status == "PristiglaRezervacija")
+                                            {
+                                                <form asp-controller="PonudePrijevoza" asp-action="OtkaziZahtjevRezervacije" method="post">
+                                                    <input type="hidden" name="IdPonuda" value="@ponuda.Id" />
+                                                    <button type="submit" class="btn btn-primary cancel">Otkaži zahtjev za rezervacijom</button>
+                                                </form>
+                                            }
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>*@
+
+<div class="container">
+    <div class="row">
+        <table class="table" id="tablemojzahtjev">
+            <thead>
+                <tr>
+                    <th>Prijevoznik</th>
+                    <th>Cijena prijevoza</th>
+                    <th>Ponuda vrijedi do</th>
+                    <th>Ponuda se može otkazati do</th>
+                    <th>Cijena otkaza ponude</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    bool rezervacijaPoslana = false;
+
+                    if (Model.PonudePrijevoza.Any(p => p.IdStatusPonudeNavigation.Status == "PristiglaRezervacija" ||
+                        p.IdStatusPonudeNavigation.Status == "Rezervirano"))
+                    {
+                        rezervacijaPoslana = true;
+                    }
+
+                    foreach (var ponuda in Model.PonudePrijevoza)
+                    {
+                <tr class=" @(ponuda.IdStatusPonudeNavigation.Status == "Rezervirano" ? "reserved" : "")
+                            @(ponuda.IdStatusPonudeNavigation.Status == "Završeno" ? "done" : "") ">
+                    <td>
+                        @{ string ime2 = ponuda.IdPrijevoznikNavigation.IdKorisnikNavigation.Ime + " " +
+                                        ponuda.IdPrijevoznikNavigation.IdKorisnikNavigation.Prezime; }
+                        <a asp-controller="ProfiliKorisnika"
+                           asp-action="Details"
+                           asp-route-id="@ponuda.IdPrijevoznikNavigation.IdKorisnik">
+                            <h5>@ime2</h5>
+                        </a>
+                    </td>
+                    <td>
+                        @ponuda.Cijena
+                    </td>
+                    <td>
+                        @ponuda.RokIstekaPonude
+                    </td>
+                    <td>
+                        @ponuda.RokOtkazaPonude
+                    </td>
+                    <td>
+                        @ponuda.CijenaOtkaza
+                    </td>
+                    <td>
+                    @if (ponuda.IdStatusPonudeNavigation.Status == "Rezervirano")
+                    {
+                    <h5>@ponuda.IdStatusPonudeNavigation.Status</h5>
+                    }
+                    </td>
+                    <td>
+                        @{
+                            if (Model.ProsireniZahtjev.IdStatusZahtjevaNavigation.Status != "Izvršeno" &&
+                                Model.ProsireniZahtjev.IdStatusZahtjevaNavigation.Status != "Neizvršeno")
+                            {
+                                if (!rezervacijaPoslana && ponuda.IdStatusPonudeNavigation.Status == "Otvoreno")
+                                {
+                                    <form asp-controller="PonudePrijevoza" asp-action="Rezervacija" method="post">
+                                        <input type="hidden" name="IdPonuda" value="@ponuda.Id" />
+                                        <button type="submit" class="btn btn-primary">Rezerviraj</button>
+                                    </form>
+
+                                }
+                                else if (ponuda.IdStatusPonudeNavigation.Status == "PristiglaRezervacija")
+                                {
+                                    <form asp-controller="PonudePrijevoza" asp-action="OtkaziZahtjevRezervacije" method="post">
+                                        <input type="hidden" name="IdPonuda" value="@ponuda.Id" />
+                                        <button type="submit" class="btn btn-primary cancel">Otkaži zahtjev za rezervacijom</button>
+                                    </form>
+                                }
+                            }
+                        }
+                    </td>
+
+                   </tr>
+                  }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section styles{
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css" />
+}
+@section scripts{
+    <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#tablemojzahtjev').DataTable({
+                language: {
+                    search: "Pretraga",
+                    zeroRecords: "Nema podataka za prikaz",
+                    info: "_START_ - _END_ (ukupno _TOTAL_)",
+                    lengthMenu: "Prikaži _MENU_ zapisa",
+                    paginate: {
+                        first: "<<",
+                        previous: "<",
+                        next: ">",
+                        last: ">>"
+                    },
+                    emptyTable: "Nema podataka za prikaz",
+                    info: "_START_ - _END_ od ukupno _TOTAL_ zapisa",
+                    infoEmpty: "Nema podataka za prikaz",
+                    infoFiltered: "(filtrirano od ukupno _MAX_ zapisa)",
+                }
+            });
+        });
+    </script>
+}
+
+
+

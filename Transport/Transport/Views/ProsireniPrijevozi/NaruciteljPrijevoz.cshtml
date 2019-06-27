@@ -1,0 +1,237 @@
+﻿@model Transport.ViewModels.ProsireniPrijevozViewModel
+
+<div class="subpage-banner transport-banner">
+    <div class="overlay"></div>
+</div>
+
+
+<div>
+    <div id="tempmessage" class="alert"></div>
+    @if (TempData[Constants.Message] != null)
+    {
+        bool error = false;
+        var obj = TempData[Constants.ErrorOccurred];
+        if (obj != null)
+        {
+            error = (bool)obj;
+        }
+        <div class="alert @(error ? "alert-danger" : "alert-success")">@TempData[Constants.Message]</div>
+    }
+</div>
+
+<div class="transport">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="request-header status">
+                    <a asp-controller="ProsireniZahtjevi"
+                       asp-action="Details"
+                       asp-route-id="@Model.ProsireniZahtjev.Id" class="link-to-request">
+                        <i class="fa fa-angle-left"></i>Idi na zahtjev
+                     </a>
+                        <label>Status:</label>
+                        <h3>@Model.ProsireniZahtjev.IdStatusZahtjevaNavigation.Status</h3>
+                        @{if (Model.ProsireniZahtjev.IdStatusZahtjevaNavigation.Status != "Izvršeno" &&
+Model.ProsireniZahtjev.IdStatusZahtjevaNavigation.Status != "Neizvršeno")
+                            {
+                                <button type="button" class="btn btn-toolbar" data-toggle="modal" data-target="#change-status-modal"><i class="fas fa-edit"></i></button>
+                            }
+                        }
+                        @{ if (Model.ProsireniZahtjev.IdStatusZahtjevaNavigation.Status == "Rezervirano" ||
+Model.ProsireniZahtjev.IdStatusZahtjevaNavigation.Status == "Zaključano")
+                            {
+                                <form asp-action="OtkaziPrijevoz" method="post">
+                                    <input type="hidden" name="IdPrijevoz" value="@Model.Prijevoz.Id" />
+                                    <button type="submit" class="btn btn-primary cancel">Otkaži prijevoz</button>
+                                </form>
+                            }
+                        }
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 col-md-offset-2">
+                <div class="request-wrapper">
+                    <div class="request-header">
+                        <label>Korisnik naručitelj:</label>
+                        @{ string ime = Model.ProsireniZahtjev.IdNaruciteljNavigation.IdKorisnikNavigation.Ime
+                                 + " " + Model.ProsireniZahtjev.IdNaruciteljNavigation.IdKorisnikNavigation.Prezime; }
+                        <a asp-controller="ProfiliKorisnika"
+                           asp-action="Details"
+                           asp-route-id="@Model.ProsireniZahtjev.IdNaruciteljNavigation.IdKorisnik">
+                            <h4> @ime</h4>
+                        </a>
+                    </div>
+                         @{
+                             if (Model.ProsireniZahtjev.IdStatusZahtjevaNavigation.Status == "Izvršeno" ||
+                               Model.ProsireniZahtjev.IdStatusZahtjevaNavigation.Status == "Neizvršeno"
+                               && Model.Prijevoz.OcjenaNarucitelja != null)
+                             {
+                                <div class="request-body">
+                                    <div class="request-part">
+                                        <label>Ishod</label>
+                                        <span> @Model.Prijevoz.IdPonudaPrijevozaNavigation.IdStatusPonudeNavigation.Status</span>
+                                        <label>Ocjena</label>
+                                        <span> @Model.Prijevoz.OcjenaNarucitelja</span>
+                                        <label>Komentar</label>
+                                        <span> @Model.Prijevoz.OpisUslugeNarucitelja </span>
+                                    </div>
+                                    @{
+                                        if (Model.NaplataNaručitelju != null)
+                                        {
+                                            <div class="request-part">
+                                                <h4>Naplata</h4>
+                                                <span>@Model.Prijevoz.IdPonudaPrijevozaNavigation.CijenaOtkaza</span>
+                                                <label>Razlog</label>
+                                                <span>@Model.NaplataNaručitelju.IdRazlogNavigation.Razlog</span>
+                                                <label>Rok izvršenja naplate</label>
+                                                <span>@Model.NaplataNaručitelju.RokIzvrsenjaNaplate</span>
+                                            </div>
+                                        }
+                                    }
+                                </div>
+
+                                        }
+                            }
+                    </div>       
+                </div>
+                <div class="col-md-4">
+                    <div class="request-wrapper">
+                        <div class="request-header">
+                            <label>Korisnik prijevoznik</label>
+                            @{ string ime2 = Model.Prijevoz.IdPonudaPrijevozaNavigation.IdPrijevoznikNavigation.IdKorisnikNavigation.Ime
+                               + " " + Model.Prijevoz.IdPonudaPrijevozaNavigation.IdPrijevoznikNavigation.IdKorisnikNavigation.Prezime; }
+                            <a asp-controller="ProfiliKorisnika"
+                               asp-action="Details"
+                               asp-route-id="@Model.Prijevoz.IdPonudaPrijevozaNavigation.IdPrijevoznikNavigation.IdKorisnik">
+                                <h4> @ime2</h4>
+                            </a>
+                            @{if (Model.ProsireniZahtjev.IdStatusZahtjevaNavigation.Status == "Izvršeno" ||
+                                               Model.ProsireniZahtjev.IdStatusZahtjevaNavigation.Status == "Neizvršeno")
+                                {
+                                    if (Model.Prijevoz.OcjenaPrijevoznika == null)
+                                    {
+                                        <button class="btn btn-primary" data-toggle="modal" data-target="#rate-prijevoznik-modal">Ocijeni<i class="fas fa-star"></i></button>
+                                    }
+                                }
+                            }
+                        </div>
+                            @{
+                                if (Model.ProsireniZahtjev.IdStatusZahtjevaNavigation.Status == "Izvršeno" ||
+                                  Model.ProsireniZahtjev.IdStatusZahtjevaNavigation.Status == "Neizvršeno"
+                                  && Model.Prijevoz.OcjenaPrijevoznika != null)
+                                {
+                                    <div class="request-body">
+                                        <div class="request-part">
+                                            <label>Ishod</label>
+                                            <span> @Model.ProsireniZahtjev.IdStatusZahtjevaNavigation.Status</span>
+                                            <label>Ocjena</label>
+                                            <span> @Model.Prijevoz.OcjenaPrijevoznika</span>
+                                            <label>Komentar</label>
+                                            <span> @Model.Prijevoz.OpisUslugePrijevoznika </span>
+                                        </div>
+                                        @{
+                                            if (Model.NaplataPrijevozniku != null)
+                                            {
+                                                <div class="request-part">
+                                                    <h4>Naplata</h4>
+                                                    <span>@Model.Prijevoz.IdPonudaPrijevozaNavigation.IdZahtjevNavigation.CijenaNeizvrsenja</span>
+                                                    <label>Razlog</label>
+                                                    <span>@Model.NaplataPrijevozniku.IdRazlogNavigation.Razlog</span>
+                                                    <label>Rok izvršenja naplate</label>
+                                                    <span>@Model.NaplataPrijevozniku.RokIzvrsenjaNaplate</span>
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+
+                                }
+                            }
+                </div>
+            </div>
+        </div>
+    </div>
+<div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+<!-- Modal promjena statusa -->
+<div class="modal fade" id="change-status-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="exampleModalLabel">Promijeni status</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form asp-action="GotovPrijevoz" method="post">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select name="StatusZahtjeva" asp-for="@Model.ProsireniZahtjev.IdStatusZahtjevaNavigation.Status" class="form-control">
+                            <option>Izvršeno</option>
+                            <option>Neizvršeno</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Zatvori</button>
+                    <input type="hidden" name="IdPrijevoz" value="@Model.Prijevoz.Id" />
+                    <button type="submit" class="btn btn-primary">Spremi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal ocijeni prijevoznika -->
+<div class="modal fade" id="rate-prijevoznik-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="exampleModalLabel">Ocijeni prijevoznika</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form asp-action="OcijeniPrijevoznika" method="post">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="form-group">
+                            <label asp-for="@Model.Prijevoz.OcjenaPrijevoznika">Ocjena</label>
+                            <select name="Ocjena" asp-for="@Model.Prijevoz.OcjenaPrijevoznika" class="form-control">
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                            </select>
+                        </div>
+                        <label asp-for="@Model.Prijevoz.OpisUslugePrijevoznika">Komentar</label>
+                        <textarea name="OpisUsluge" asp-for="@Model.Prijevoz.OpisUslugePrijevoznika"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="eco">Naplata</label>
+                        <input name="IdeNaplata" class="form-control eco" type="checkbox" onchange="includePayment(this)">
+                    </div>
+                    <div class="form-group pay">
+                        <h4>Naplata</h4>
+                        <label>Razlog</label>
+                        <select name="IdRazlog" asp-for="@Model.NaplataPrijevozniku.IdRazlog" class="form-control" asp-items="ViewBag.IdRazlog"></select>
+                        <label>Rok izvršenja naplate</label>
+                        <input name="RokIzvrsenjaNaplate" asp-for="@Model.NaplataPrijevozniku.RokIzvrsenjaNaplate" class="form-control" type="date" />
+                        <span asp-validation-for="@Model.NaplataPrijevozniku.RokIzvrsenjaNaplate" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Zatvori</button>
+                    <input type="hidden" name="IdPrijevoz" value="@Model.Prijevoz.Id" />
+                    <button type="submit" class="btn btn-primary">Spremi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

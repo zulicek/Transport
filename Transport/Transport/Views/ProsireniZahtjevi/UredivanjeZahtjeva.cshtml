@@ -1,0 +1,96 @@
+﻿@model ProsireniZahtjevViewModel
+<!-- Modal -->
+<div class="modal fade" id="edit-request-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="exampleModalLabel">Uređivanje zahtjeva</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form asp-action="Edit">
+                <div class="modal-body">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="Id" />
+                    <div class="form-group">
+                        <h5>Polazište</h5>
+                        <label>Ulica</label>
+                        <input asp-for="PocetnaLokacijaUlica" class="form-control" />
+                        <span asp-validation-for="PocetnaLokacijaUlica" class="text-danger"></span>
+                        <label>Kućni broj</label>
+                        <input asp-for="PocetnaLokacijaKucniBroj" class="form-control" />
+                        <span asp-validation-for="PocetnaLokacijaKucniBroj" class="text-danger"></span>
+                        <label>Poštanski broj</label>
+                        <input asp-for="PocetnoMjestoPbr" class="form-control" />
+                        <span asp-validation-for="PocetnoMjestoPbr" class="text-danger"></span>
+                        <label>Naziv mjesta</label>
+                        <input asp-for="PocetnoMjesto" class="form-control" />
+                        <span asp-validation-for="PocetnoMjesto" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <h5>Odredište</h5>
+                        <label>Ulica</label>
+                        <input asp-for="OdredisnaLokacijaUlica" class="form-control" />
+                        <span asp-validation-for="OdredisnaLokacijaUlica" class="text-danger"></span>
+                        <label>Kućni broj</label>
+                        <input asp-for="OdredisnaLokacijaKucniBroj" class="form-control" />
+                        <span asp-validation-for="OdredisnaLokacijaKucniBroj" class="text-danger"></span>
+                        <label>Poštanski broj</label>
+                        <input asp-for="OdredisnoMjestoPbr" class="form-control" />
+                        <span asp-validation-for="OdredisnoMjestoPbr" class="text-danger"></span>
+                        <label>Naziv mjesta</label>
+                        <input asp-for="OdredisnoMjesto" class="form-control" />
+                        <span asp-validation-for="OdredisnoMjesto" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <h5>Prijevoz se mora izvršiti</h5>
+                        <label>Od:</label>
+                        <input asp-for="VrijemePocetka" class="form-control" />
+                        <span asp-validation-for="VrijemePocetka" class="text-danger"></span>
+                        <label>Do:</label>
+                        <input asp-for="VrijemeZavrsetka" class="form-control" />
+                        <span asp-validation-for="VrijemeZavrsetka" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Cijena neizvršenja:</label>
+                        <input asp-for="CijenaNeizvrsenja" class="form-control pay" type="number" step="0.01" /> kn
+                        <span asp-validation-for="CijenaNeizvrsenja" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <h5>Podaci o teretu</h5>
+                        <label>Širina</label>
+                        <input asp-for="Sirina" type="number" step="0.01"> m
+                        <span asp-validation-for="Sirina" class="text-danger"></span>
+                        <label>Visina</label>
+                        <input asp-for="Visina" type="number" step="0.01"> m
+                        <span asp-validation-for="Visina" class="text-danger"></span>
+                        <label>Duljina</label>
+                        <input asp-for="Duiljina" type="number" step="0.01"> m
+                        <span asp-validation-for="Duiljina" class="text-danger"></span>
+                        <label>Masa</label>
+                        <input asp-for="Masa" type="number" step="0.01"> kg
+                        <span asp-validation-for="Masa" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Opis:</label>
+                        <textarea asp-for="Opis"></textarea>
+                        <span asp-validation-for="Opis" class="text-danger"></span>
+                    </div>
+                    <input type="hidden" asp-for="IdNarucitelj" value="@ViewData["IdNarucitelj"]" />
+                    <input type="hidden" asp-for="IdStatusZahtjeva" value="@ViewData["IdStatusZahtjeva"]" />
+                </div>
+                <div class="modal-footer">
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Zatvori</button>
+                        <button type="submit" class="btn btn-primary">Spremi</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

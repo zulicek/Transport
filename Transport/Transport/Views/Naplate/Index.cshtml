@@ -1,0 +1,55 @@
+﻿@model IEnumerable<Transport.Models.Naplata>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.RokIzvrsenjaNaplate)
+                </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdPrijevozNavigation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdRazlogNavigation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdVrstaNaplateNavigation)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.RokIzvrsenjaNaplate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdPrijevozNavigation.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdRazlogNavigation.Razlog)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdVrstaNaplateNavigation.Vrsta)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <form asp-action="Delete" asp-route-id="@item.Id" method="post">
+                    <input type="hidden" name="Id" value="@item.Id" />
+                    <button type="submit" class="delete btn-link" title="Delete">Obriši</button>
+                </form>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

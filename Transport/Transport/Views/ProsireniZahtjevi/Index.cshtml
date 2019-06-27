@@ -1,0 +1,231 @@
+﻿@model ZahtjeviLokacijeViewModel
+
+@{
+    var zahtjeviLokacije = Model.ZahtjeviLokacije;
+}
+
+
+<div class="subpage-banner user-requests-banner">
+    <div class="overlay"></div>
+</div>
+
+
+@await Html.PartialAsync("KreiranjeZahtjeva", new ProsireniZahtjevViewModel())
+
+<div>
+    <div id="tempmessage" class="alert"></div>
+    @if (TempData[Constants.Message] != null)
+    {
+        bool error = false;
+        var obj = TempData[Constants.ErrorOccurred];
+        if (obj != null)
+        {
+            error = (bool)obj;
+        }
+        <div class="alert @(error ? "alert-danger" : "alert-success")">@TempData[Constants.Message]</div>
+    }
+</div>
+
+@*<div class="requests">
+        <div class="container">
+            <div class="row flex-row">
+                @foreach (var item in Model.Zahtjevi)
+                {
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 flex-col">
+                        <div class="request-wrapper @(item.IdStatusZahtjevaNavigation.Status != "Otvoreno" &&
+    item.IdStatusZahtjevaNavigation.Status != "PristiglePonude" ? "reserved" : "")
+                              @(item.IdStatusZahtjevaNavigation.Status == "Izvršeno" ||
+          item.IdStatusZahtjevaNavigation.Status == "Neizvršeno" ? "done" : "")">
+                            <div class="request-header">
+                                <label>Korisnik:</label>
+                                @{ string ime = item.IdNaruciteljNavigation.IdKorisnikNavigation.Ime + " " +
+             item.IdNaruciteljNavigation.IdKorisnikNavigation.Prezime;}
+                                <a asp-controller="ProfiliKorisnika"
+                                   asp-action="Details"
+                                   asp-route-id="@item.IdNaruciteljNavigation.IdKorisnik">
+                                    <h4>@ime</h4>
+                                </a>
+                                @{ if (item.IdNaruciteljNavigation.ZahtijevaEko != null)
+                                    {
+                                        <i class="fa fa-leaf"></i>
+                                    }
+                                }
+                            </div>
+                            <div class="request-body">
+                                <div class="request-part status">
+                                    <label>Status</label>
+                                    <h4>@item.IdStatusZahtjevaNavigation.Status</h4>
+                                </div>
+                                <div class="request-part">
+                                    <label>Početak:</label>
+                                    <span>@item.VrijemePocetka</span>
+                                    <label>Završetak:</label>
+                                    <span>@item.VrijemeZavrsetka</span>
+                                </div>
+                                @{
+                                    var zahtjevId = item.Id;
+
+                                    /* sve lokacije zahtjeva - dvije lokacije, početna i završna*/
+                                    var lokacijeZahtjeva = zahtjeviLokacije.Where(i => i.IdZahtjev == zahtjevId);
+
+                                    Lokacija pocetnaLokacija = null;
+                                    Lokacija odredisnaLokacija = null;
+
+                                    foreach (var lokacija in lokacijeZahtjeva)
+                                    {
+                                        if (lokacija.IdLokacijaNavigation.IdVrstaLokacijeNavigation.Vrsta == "početna")
+                                        {
+                                            pocetnaLokacija = lokacija.IdLokacijaNavigation;
+                                        }
+                                        else
+                                        {
+                                            odredisnaLokacija = lokacija.IdLokacijaNavigation;
+                                        }
+                                    }
+                                }
+                                <div class="request-part">
+                                    <label>Početna lokacija:</label>
+                                    <span>
+                                        @{var pocetnoMjestoString = pocetnaLokacija.IdMjestoNavigation.PostanskiBroj + ", " + pocetnaLokacija.IdMjestoNavigation.Naziv;}
+                                        @pocetnoMjestoString
+                                    </span>
+                                    <label>Odredišna lokacija:</label>
+                                    <span>
+                                        @{var odredisnoMjestoString = odredisnaLokacija.IdMjestoNavigation.PostanskiBroj + ", " + odredisnaLokacija.IdMjestoNavigation.Naziv;}
+                                        @odredisnoMjestoString
+                                    </span>
+                                </div>
+                                <div class="request-part">
+                                    <label>Opis</label>
+                                    <span>@item.Opis</span>
+                                </div>
+                            </div>
+                            <div class="request-footer">
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary">Detalji<i class="fa fa-angle-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                                            }
+            </div>
+        </div>
+    </div>*@
+
+<div class="container">
+    <div class="row">
+        <table class="table" id="tablezahtjevi">
+            <thead>
+                <tr>
+                    <th>Zahtijeva eko</th>
+                    <th>Naručitelj</th>
+                    <th>Početak</th>
+                    <th>Završetak</th>
+                    <th>Početna lokacija</th>
+                    <th>Odredišna lokacija</th>
+                    <th>Opis</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Zahtjevi)
+                {
+                    <tr class="@(item.IdStatusZahtjevaNavigation.Status != "Otvoreno" &&
+                            item.IdStatusZahtjevaNavigation.Status != "PristiglePonude" ? "reserved" : "")
+                          @(item.IdStatusZahtjevaNavigation.Status == "Izvršeno" ||
+                            item.IdStatusZahtjevaNavigation.Status == "Neizvršeno" ? "done" : "")">
+                        <td class="eco">
+                            @{ if (item.IdNaruciteljNavigation.ZahtijevaEko != null)
+                                {
+                                    <i class="fa fa-leaf"></i>
+                                }
+                            }
+                        </td>
+                        <td>
+                            @{ string ime = item.IdNaruciteljNavigation.IdKorisnikNavigation.Ime + " " +
+                                           item.IdNaruciteljNavigation.IdKorisnikNavigation.Prezime;}
+                            <a asp-controller="ProfiliKorisnika"
+                               asp-action="Details"
+                               asp-route-id="@item.IdNaruciteljNavigation.IdKorisnik">
+                                <h5>@ime</h5>
+                            </a>
+                        </td>
+                        <td>
+                            @item.VrijemePocetka
+                        </td>
+                        <td>
+                            @item.VrijemeZavrsetka
+                        </td>
+                        @{
+                            var zahtjevId = item.Id;
+
+                            /* sve lokacije zahtjeva - dvije lokacije, početna i završna*/
+                            var lokacijeZahtjeva = zahtjeviLokacije.Where(i => i.IdZahtjev == zahtjevId);
+
+                            Lokacija pocetnaLokacija = null;
+                            Lokacija odredisnaLokacija = null;
+
+                            foreach (var lokacija in lokacijeZahtjeva)
+                            {
+                                if (lokacija.IdLokacijaNavigation.IdVrstaLokacijeNavigation.Vrsta == "početna")
+                                {
+                                    pocetnaLokacija = lokacija.IdLokacijaNavigation;
+                                }
+                                else
+                                {
+                                    odredisnaLokacija = lokacija.IdLokacijaNavigation;
+                                }
+                            }
+                        }
+                        <td>
+                            @{var pocetnoMjestoString = pocetnaLokacija.IdMjestoNavigation.PostanskiBroj + ", " + pocetnaLokacija.IdMjestoNavigation.Naziv;}
+                            @pocetnoMjestoString
+                        </td>
+                        <td>
+                            @{var odredisnoMjestoString = odredisnaLokacija.IdMjestoNavigation.PostanskiBroj + ", " + odredisnaLokacija.IdMjestoNavigation.Naziv;}
+                            @odredisnoMjestoString
+                        </td>
+                        <td>
+                            @item.Opis
+                        </td>
+                        <td>
+                            <h5>@item.IdStatusZahtjevaNavigation.Status</h5>
+                        </td>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary transport">Detalji<i class="fa fa-angle-right"></i></a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section styles{
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css" />
+}
+@section scripts{
+    <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#tablezahtjevi').DataTable({
+                language: {
+                    search: "Pretraga",
+                    zeroRecords: "Nema podataka za prikaz",
+                    info: "_START_ - _END_ (ukupno _TOTAL_)",
+                    lengthMenu: "Prikaži _MENU_ zapisa",
+                    paginate: {
+                        first: "<<",
+                        previous: "<",
+                        next: ">",
+                        last: ">>"
+                    },
+                    emptyTable: "Nema podataka za prikaz",
+                    info: "_START_ - _END_ od ukupno _TOTAL_ zapisa",
+                    infoEmpty: "Nema podataka za prikaz",
+                    infoFiltered: "(filtrirano od ukupno _MAX_ zapisa)",
+                }
+            });
+        });
+    </script>
+}
